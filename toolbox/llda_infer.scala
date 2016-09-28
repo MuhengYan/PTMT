@@ -36,7 +36,7 @@ val source = CSVFile("test.csv") ~> IDColumn(1);
 
 val text = {
   source ~>                              // read from the source file
-  Column(3) ~>                           // select column containing text
+  Column(2) ~>                           // select column containing text
   TokenizeWith(model.tokenizer.get)      // tokenize with existing model's tokenizer
 }
 
