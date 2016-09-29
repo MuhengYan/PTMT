@@ -53,12 +53,12 @@ class PythonTMT:
         :return: None
         """
         if mode == 'train':
-            call(["java", "-jar", dir + "tmt-0.4.0.jar", "llda_" + dir + mode + ".scala",
+            call(["java", "-jar", self.dir + "tmt-0.4.0.jar", self.dir + "llda_" + mode + ".scala",
                   str(self.maxiter), str(self.filter_llda[0]), str(self.filter_llda[1]),
                   str(self.filter_llda[2]), str(self.filter_llda[3]), str(self.filter_llda[4]),
                   self.name, self.dir])
         elif mode == 'infer':
-            call(["java", "-jar", dir + "tmt-0.4.0.jar", "llda_" + dir + mode + ".scala",
+            call(["java", "-jar", self.dir + "tmt-0.4.0.jar", self.dir + "llda_" + mode + ".scala",
                   self.name, self.dir])
 
     def rm(self, target = 'gz'):
