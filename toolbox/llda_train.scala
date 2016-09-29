@@ -73,6 +73,7 @@ val model = TrainCVB0LabeledLDA(modelParams, dataset, output = modelPath, maxIte
 for(i <- 0 to (model.numTopics - 1)){
   println("[TopicName] name of topic " + i + " : " + model.topicName(i));
 }
+ 
 
 
 
