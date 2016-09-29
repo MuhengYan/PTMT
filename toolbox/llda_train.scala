@@ -63,7 +63,7 @@ val dataset = LabeledLDADataset(text, labels);
 val modelParams = LabeledLDAModelParams(dataset);
 
 // Name of the output model folder to generate, Path = args(6)
-val modelPath = file(args(6));
+val modelPath = file(args(7) + args(6));
 
 // Trains the model, writing to the given output path, MaxIter = args(0)
 val model = TrainCVB0LabeledLDA(modelParams, dataset, output = modelPath, maxIterations = args(0).toInt);

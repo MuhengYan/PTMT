@@ -24,7 +24,7 @@ import edu.stanford.nlp.tmt.model.lda._;
 import edu.stanford.nlp.tmt.model.llda._;
 
 // the path of the model to load, Path = args(0)
-val modelPath = file(args(0));
+val modelPath = file(args(1) + args(0));
 
 println("Loading "+modelPath);
 val model = LoadCVB0LabeledLDA(modelPath).asCVB0LDA;

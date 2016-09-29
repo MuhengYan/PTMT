@@ -42,8 +42,7 @@ class PythonTMT:
         self.filter_llda = filter_llda
         self.dir = path.dirname(path.realpath(__file__)) + \
             '{0}toolbox{0}'.format(sep)
-        self.modelDir = path.dirname(path.realpath(__file__)) + \
-            '{0}'.format(sep)
+
 
     def callTMT(self, mode):
         """
@@ -53,7 +52,7 @@ class PythonTMT:
         :return: None
         """
         if mode == 'train':
-            call(["java", "-jar", self.dir + "tmt-0.4.0.jar", self.dir + "llda_" + mode + ".scala",
+            call(["java", "-jar", self.dir + "tmt-0.4.0.jar", self.dir  + "llda_" + mode + ".scala",
                   str(self.maxiter), str(self.filter_llda[0]), str(self.filter_llda[1]),
                   str(self.filter_llda[2]), str(self.filter_llda[3]), str(self.filter_llda[4]),
                   self.name, self.dir])
@@ -69,9 +68,9 @@ class PythonTMT:
         :return: None
         """
         if target == 'gz':
-            filelist = glob(dir + "*.gz")
+            filelist = glob(self.dir + "*.gz")
         elif target == 'csv':
-            filelist = glob(dir + "*.csv")
+            filelist = glob(self.dir + "*.csv")
         ###\elif target == 'model'
         for file in filelist:
             remove(file)
@@ -133,6 +132,46 @@ class PythonTMT:
         """
         self.callTMT(mode='infer')
 
+    def to_array(self, y_true, y_score):
+        #This function is from "https://github.com/clips/topbox/blob/master/stmt.py"
+        """To sklean-ready array.
+        Converts the incidence matrix and its probabilites to a numpy format.
+        Also cleans out columns that produce a sum of zeroes; this results in
+        a division by zero error when determining recall. Dependencies are
+        both numpu and scipy.
+        Parameters
+        ----------
+        y_true : list of integers
+            Binary list (incidence matrix).
+        y_score : list of floats
+            Probabilities per topic.
+        Return
+        ------
+        (y_true, y_score): numpy arrays
+            Filtered and converted version of y_true and y_score input.
+        """
+        from collections import Counter
+        import scipy
+        import numpy as np
+
+        def scan_empty(y_true):
+            c = Counter()
+            for x in y_true:
+                for i, y in enumerate(x):
+                    c[i] += y
+            return [key for key, value in c.items() if value == 0]
+
+        def lab_reduce(y_true, y_score):
+            empty_indices = scan_empty(y_true)
+            i = 0
+            for k in empty_indices:
+                y_true = scipy.delete(y_true, k - i, 1)
+                y_score = scipy.delete(y_score, k - i, 1)
+                i += 1
+            return y_true, y_score
+
+        return lab_reduce(np.asarray(y_true), np.asarray(y_score))
+
     def evaluation(self, trueLabels):
         """
         calculate the precision
@@ -142,12 +181,12 @@ class PythonTMT:
         :return: None
         """
         labelname = open("%s%s%s%s.txt" %
-                         (self.modelDir, self.name, sep,
+                         (self.dir, self.name, sep,
                           '00000{0}label-index'.format(sep)), 'r')
         label_index = labelname.read().lower().split('\n')[:-1]
         labelname.close()
 
-        DTdistro = open("%s%s%s%s.csv" % (self.modelDir, self.name, sep, 'infer-document-topic-distributions-res'))
+        DTdistro = open("%s%s%s%s.csv" % (self.dir, self.name, sep, 'infer-document-topic-distributions-res'))
         predicted_weights = reader(DTdistro)
 
         ytrue = []
@@ -159,5 +198,6 @@ class PythonTMT:
             if 1 in true:
                 ytrue.append(true)
                 yprob.append(prob)
+        ytrue, yprob = self.to_array(ytrue, yprob)
         prec = average_precision_score(y_score=yprob, y_true=ytrue)
         return prec
