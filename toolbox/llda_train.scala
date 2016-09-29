@@ -13,7 +13,8 @@
   args(3) (Int) common Term Filter    Numbers of the most common terms removed     
   args(4) (Int) doc length Filter     Minimum length of Doc taken                    
   args(5) (Int) Label MinDoc Filter   Minimum appearance of labels in docs taken   
-  args(6) (Str) Model Name            The name of the lLDA model trained           
+  args(6) (Str) Model Name            The name of the lLDA model trained
+  args(7) (Str) Absolute Path         The absolute path to ".../PTMT/toolbox" 
   ---------------------------------------------------------------------------------
 */
 
@@ -28,7 +29,7 @@ import edu.stanford.nlp.tmt.stage._;
 import edu.stanford.nlp.tmt.model.lda._;
 import edu.stanford.nlp.tmt.model.llda._;
 
-val source = CSVFile("train.csv") ~> IDColumn(1);
+val source = CSVFile(args(7) + "train.csv") ~> IDColumn(1);
 
 val tokenizer = {
   SimpleEnglishTokenizer() ~>                        // tokenize on space and punctuation

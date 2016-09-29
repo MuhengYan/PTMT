@@ -7,7 +7,8 @@
   Parameters:
   Para    Type  Name                  Description                                  
   ---------------------------------------------------------------------------------
-  args(0) (Str) Model Name            The name of the lLDA model trained           
+  args(0) (Str) Model Name            The name of the lLDA model trained 
+  args(1) (Str) Absolute Path         The absolute path to ".../PTMT/toolbox"           
   ---------------------------------------------------------------------------------
 */
 
@@ -32,7 +33,7 @@ val model = LoadCVB0LabeledLDA(modelPath).asCVB0LDA;
 
 // A new dataset for inference.  (Here we use the same dataset
 // that we trained against, but this file could be something new.)
-val source = CSVFile("test.csv") ~> IDColumn(1);
+val source = CSVFile(args(1) + "infer.csv") ~> IDColumn(1);
 
 val text = {
   source ~>                              // read from the source file
