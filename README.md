@@ -1,6 +1,10 @@
 # PTMT
 
-Stanford Topic Modeling Toolbox for Python
+Stanford Topic Modeling Toolbox for Python. 
+
+The training and inference processes can be execute separately as long as you have the correct model in your local file system.
+
+
 
 # Installation
 Please download Stanford Topic Modeling Toolbox along with this package, and put the .jar file under .../PTMT/toolbox
